@@ -1,0 +1,30 @@
+{
+  "name": "@slidelabs/solana-toolkit",
+  "version": "0.0.1",
+  "description": "Quickly use the main methods present in Solana, all in one toolkit. SPL tokens, transactions, mints.",
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "clean": "rimraf build",
+    "build": "yarn run clean && tsc"
+  },
+  "dependencies": {},
+  "keywords": [
+    "solana",
+    "blockchain",
+    "currency",
+    "transaction",
+    "nft",
+    "mint"
+  ],
+  "contributors": [
+    "dannpl"
+  ],
+  "main": "build/index.js",
+  "module": "build/index.js",
+  "files": [
+    "build"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

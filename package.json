@@ -1,7 +1,7 @@
 {
-  "name": "@slidelabs/solana-sdk",
+  "name": "@slidelabs/solana-toolkit",
   "version": "0.0.1",
-  "description": "Quickly use the main methods present in Solana, all in one sdk. SPL tokens, transactions, mints.",
+  "description": "Quickly use the main methods present in Solana, all in one toolkit. SPL tokens, transactions, mints.",
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
     "clean": "rimraf build",

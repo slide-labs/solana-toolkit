@@ -2,7 +2,7 @@
 
 ![npm](https://img.shields.io/npm/v/@slidelabs/solana-sdk)
 
-Quickly use the main methods present in Solana, all in one sdk. SPL tokens, transactions, mints.
+Quickly use the main methods present in Solana, all in one toolkit. SPL tokens, transactions, mints.
 
 ## Installation
 

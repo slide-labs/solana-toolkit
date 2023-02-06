@@ -1,6 +1,6 @@
 # `@slidelabs/solana-toolkit`
 
-![npm](https://img.shields.io/npm/v/@slidelabs/solana-sdk)
+![npm](https://img.shields.io/npm/v/@slidelabs/solana-toolkit)
 
 Quickly use the main methods present in Solana, all in one toolkit. SPL tokens, transactions, mints.
 

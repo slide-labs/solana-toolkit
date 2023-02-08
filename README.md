@@ -77,7 +77,7 @@ candyMachine.createCandyMachine(
     {
       fileName: "0",
       image: "0.png",
-      nftName: "Slide Lab Master",
+      nftName: "Glorious Arctic Halibut",
       options: {},
     },
   ],

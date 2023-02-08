@@ -1,6 +1,6 @@
 {
   "name": "@slidelabs/solana-toolkit",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Quickly use the main methods present in Solana, all in one toolkit. SPL tokens, transactions, mints.",
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",

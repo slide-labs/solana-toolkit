@@ -10,7 +10,7 @@ export default class Transaction {
 
   /**
    * Request SOL airdrop to a wallet address
-   *
+   *  @param walletAddressPublicKey receive airdrop
    * `it's run only on devnet or testnet!`
    */
   async solAirDrop(walletAddressPublicKey: PublicKey) {
@@ -21,7 +21,7 @@ export default class Transaction {
       );
       return response;
     } catch {
-      return DefaultError;
+      throw DefaultError;
     }
   }
 }

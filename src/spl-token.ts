@@ -1,4 +1,9 @@
-import { createMint } from "@solana/spl-token";
+import {
+  AccountLayout,
+  createMint,
+  getOrCreateAssociatedTokenAccount,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
 import { Connection, PublicKey, Signer } from "@solana/web3.js";
 import { CreateTokenError } from "./errors";
 
@@ -11,7 +16,6 @@ export default class SplToken {
 
   /**
    * Create a new SPL token
-   * 
    * @param payer payer wallet
    * @param mintAuthorityPublicKey mint authority public key
    * @param freezeAuthorityPublicKey freeze authority public key
@@ -31,7 +35,52 @@ export default class SplToken {
       );
       return mint;
     } catch {
-      return CreateTokenError;
+      throw CreateTokenError;
+    }
+  }
+
+  /**
+   * Find all SPL tokens by owner
+   * @param address owner wallet address
+   */
+  async findAllSplTokensBalance(address: string) {
+    try {
+      const account = new PublicKey(address);
+
+      const tokenAccounts = await this.connection.getTokenAccountsByOwner(
+        account,
+        {
+          programId: TOKEN_PROGRAM_ID,
+        }
+      );
+
+      const accounts: Record<string, bigint> = {};
+      tokenAccounts.value.forEach(async (tokenAccount) => {
+        const accountData = AccountLayout.decode(tokenAccount.account.data);
+        accounts[accountData.mint.toBase58()] = accountData.amount;
+      });
+
+      return accounts;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getOrCreateSplTokenAccount(signer: Signer, mintAddress: string) {
+    const mintPublicKey = new PublicKey(mintAddress);
+    const payerPublicKey = signer.publicKey;
+
+    try {
+      const response = await getOrCreateAssociatedTokenAccount(
+        this.connection,
+        signer,
+        mintPublicKey,
+        payerPublicKey
+      );
+
+      return response;
+    } catch (e) {
+      throw e;
     }
   }
 

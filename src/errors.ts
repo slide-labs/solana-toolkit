@@ -17,3 +17,7 @@ export const UploadFilesError = new Error(
 export const CandyMachineDontFoundError = new Error(
   "Candy machine not found, try again later."
 );
+
+export const AccountNotFoundError = new Error(
+  "Account not found, try again later."
+);

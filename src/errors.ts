@@ -9,3 +9,11 @@ export const CreateTokenError = new Error(
 export const CreateCandyMachineError = new Error(
   "Error creating candy machine, try again later."
 );
+
+export const UploadFilesError = new Error(
+  "Error to uploading files, try again later."
+);
+
+export const CandyMachineDontFoundError = new Error(
+  "Candy machine not found, try again later."
+);

@@ -11,7 +11,11 @@ import {
   bundlrStorage,
 } from "@metaplex-foundation/js";
 import { Cluster, Connection, Keypair, PublicKey } from "@solana/web3.js";
-import { CreateCandyMachineError } from "./errors";
+import {
+  CandyMachineDontFoundError,
+  CreateCandyMachineError,
+  UploadFilesError,
+} from "./errors";
 
 export default class CandyMachine {
   connection: Connection;
@@ -78,6 +82,48 @@ export default class CandyMachine {
         throw CreateCandyMachineError;
       }
 
+      const insertItemsToCandyMachineV2Operation =
+        await this.addItemsToCandyMachine(
+          candyMachine.address.toString(),
+          files,
+          metaDatas
+        );
+
+      if (!insertItemsToCandyMachineV2Operation) {
+        throw UploadFilesError;
+      }
+
+      return {
+        candyMachine,
+        itemsResponse: insertItemsToCandyMachineV2Operation,
+        link: `https://www.solaneyes.com/address/G5JqWc5eJogfKSb7Moegc64Ms2zx4UF5aBKVHgpWbuqN?cluster=${this.cluster}`,
+      };
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  /**
+   * Add NFTs to Candy Machine
+   *
+   * @param candyMachineAddress Candy Machine Address
+   * @param files files to upload
+   * @param metaData metadata to upload
+   */
+  async addItemsToCandyMachine(
+    candyMachineAddress: string,
+    files: NftFile[],
+    metaDatas: NftMetaData[]
+  ) {
+    try {
+      const candyMachine = await this.metaplex
+        .candyMachinesV2()
+        .findByAddress({ address: new PublicKey(candyMachineAddress) });
+
+      if (!candyMachine) {
+        throw CandyMachineDontFoundError;
+      }
+
       const metaplexImageFiles = files.map((file) =>
         toMetaplexFile(file.image, file.fileName, file.options)
       );
@@ -122,11 +168,7 @@ export default class CandyMachine {
           })),
         });
 
-      return {
-        candyMachine,
-        itemsResponse: insertItemsToCandyMachineV2Operation.response,
-        link: `https://www.solaneyes.com/address/G5JqWc5eJogfKSb7Moegc64Ms2zx4UF5aBKVHgpWbuqN?cluster=${this.cluster}`,
-      };
+      return insertItemsToCandyMachineV2Operation.response;
     } catch (e) {
       throw e;
     }

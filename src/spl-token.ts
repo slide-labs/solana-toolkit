@@ -1,4 +1,11 @@
 import {
+  Metaplex,
+  Nft,
+  NftWithToken,
+  Sft,
+  SftWithToken,
+} from "@metaplex-foundation/js";
+import {
   AccountLayout,
   createMint,
   getOrCreateAssociatedTokenAccount,
@@ -9,9 +16,11 @@ import { CreateTokenError } from "./errors";
 
 export default class SplToken {
   connection: Connection;
+  metaplex: Metaplex;
 
   constructor(connection: Connection) {
     this.connection = connection;
+    this.metaplex = new Metaplex(connection);
   }
 
   /**
@@ -43,27 +52,53 @@ export default class SplToken {
    * Find all SPL tokens by owner
    * @param address owner wallet address
    */
-  async findAllSplTokensBalance(address: string) {
-    try {
-      const account = new PublicKey(address);
+  async findAllSplTokens(address: string) {
+    const account = new PublicKey(address);
 
-      const tokenAccounts = await this.connection.getTokenAccountsByOwner(
-        account,
-        {
-          programId: TOKEN_PROGRAM_ID,
-        }
-      );
+    const tokenAccounts = await this.connection.getTokenAccountsByOwner(
+      account,
+      {
+        programId: TOKEN_PROGRAM_ID,
+      }
+    );
 
-      const accounts: Record<string, bigint> = {};
-      tokenAccounts.value.forEach(async (tokenAccount) => {
-        const accountData = AccountLayout.decode(tokenAccount.account.data);
-        accounts[accountData.mint.toBase58()] = accountData.amount;
-      });
+    const accounts: Record<
+      string,
+      {
+        amount: bigint;
+        name: string;
+        address: string;
+        symbol: string;
+        image?: string | null;
+      }
+    > = {};
 
-      return accounts;
-    } catch (e) {
-      throw e;
+    for (let i = 0; i < tokenAccounts.value.length; i++) {
+      const tokenAccount = tokenAccounts.value[i];
+
+      const accountData = AccountLayout.decode(tokenAccount.account.data);
+      let tokenMetadata: Sft | SftWithToken | Nft | NftWithToken | null = null;
+
+      try {
+        tokenMetadata = await this.metaplex.nfts().findByMint({
+          mintAddress: new PublicKey(accountData.mint),
+        });
+      } catch {}
+
+      if (tokenMetadata?.model === "nft") continue;
+
+      console.log(tokenMetadata);
+
+      accounts[accountData.mint.toBase58()] = {
+        amount: accountData.amount,
+        name: tokenMetadata?.name || "Unknown",
+        address: tokenAccount.pubkey.toBase58(),
+        symbol: tokenMetadata?.symbol || "Unknown",
+        image: tokenMetadata?.json?.image || null,
+      };
     }
+
+    return accounts;
   }
 
   async getOrCreateSplTokenAccount(signer: Signer, mintAddress: string) {
@@ -83,6 +118,4 @@ export default class SplToken {
       throw e;
     }
   }
-
-  sendToken() {}
 }

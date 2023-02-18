@@ -73,7 +73,7 @@ export default class CandyMachine {
       .then((candyMachine) => candyMachine.candyMachine)
       .catch(() => {});
 
-    if (!candyMachine?.address) {
+    if (candyMachine && !candyMachine?.address) {
       return;
     }
 

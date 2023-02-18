@@ -1,11 +1,11 @@
 {
   "name": "@slidelabs/solana-toolkit",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "Quickly use the main methods present in Solana, all in one toolkit. SPL tokens, transactions, mints.",
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
     "clean": "rimraf build",
-    "build": "yarn run clean && tsc",
+    "build": "yarn run clean && tsc --declaration",
     "start": "npx nodemon ./src/index.ts"
   },
   "dependencies": {
@@ -39,6 +39,8 @@
     "access": "public"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/node-fetch": "^2.6.2",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"

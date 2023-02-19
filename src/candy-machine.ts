@@ -64,8 +64,8 @@ export default class CandyMachine {
    */
   async createCandyMachine(
     candyMachineConfig: CandyMachineV2Configs,
-    files: NftFile[],
-    metaDatas: NftMetaData[]
+    files?: NftFile[],
+    metaDatas?: NftMetaData[]
   ) {
     const candyMachine = await this.metaplex
       .candyMachinesV2()
@@ -82,6 +82,15 @@ export default class CandyMachine {
         throw CreateCandyMachineError;
       }
 
+      const link = `https://www.solaneyes.com/address/${candyMachine.address}?cluster=${this.cluster}`;
+
+      if (!files || !metaDatas) {
+        return {
+          candyMachine,
+          link,
+        };
+      }
+
       const insertItemsToCandyMachineV2Operation =
         await this.addItemsToCandyMachine(
           candyMachine.address.toString(),
@@ -96,7 +105,7 @@ export default class CandyMachine {
       return {
         candyMachine,
         itemsResponse: insertItemsToCandyMachineV2Operation,
-        link: `https://www.solaneyes.com/address/G5JqWc5eJogfKSb7Moegc64Ms2zx4UF5aBKVHgpWbuqN?cluster=${this.cluster}`,
+        link,
       };
     } catch (e) {
       throw e;

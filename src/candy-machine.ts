@@ -12,6 +12,7 @@ import {
 } from "@metaplex-foundation/js";
 import { Cluster, Connection, Keypair, PublicKey } from "@solana/web3.js";
 import {
+  CandyMachineDontCreatedError,
   CandyMachineDontFoundError,
   CreateCandyMachineError,
   UploadFilesError,
@@ -73,15 +74,15 @@ export default class CandyMachine {
       .then((candyMachine) => candyMachine.candyMachine)
       .catch(() => {});
 
-    if (candyMachine && !candyMachine?.address) {
-      return;
+    if (!candyMachine?.address) {
+      return CandyMachineDontCreatedError;
+    }
+
+    if (!candyMachine) {
+      throw CreateCandyMachineError;
     }
 
     try {
-      if (!candyMachine) {
-        throw CreateCandyMachineError;
-      }
-
       const link = `https://www.solaneyes.com/address/${candyMachine.address}?cluster=${this.cluster}`;
 
       if (!files || !metaDatas) {

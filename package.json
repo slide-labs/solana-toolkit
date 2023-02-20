@@ -1,14 +1,14 @@
 {
   "name": "@slidelabs/solana-toolkit",
-  "version": "0.0.19",
+  "version": "0.0.21",
   "description": "Quickly use the main methods present in Solana, all in one toolkit. SPL tokens, transactions, mints.",
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
     "clean": "rimraf build",
     "build": "yarn run clean && tsc --declaration",
-    "start": "npx nodemon ./src/index.ts",
-    "publish": "yarn build && npm publish && rm -rf build"
+    "start": "npx nodemon ./src/index.ts"
   },
+  "license": "MIT",
   "dependencies": {
     "@metaplex-foundation/js": "^0.18.0",
     "@solana/spl-token": "^0.3.7",

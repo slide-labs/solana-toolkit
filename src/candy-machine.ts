@@ -1,5 +1,5 @@
 import {
-  CandyMachineV2Configs,
+  Option,
   keypairIdentity,
   Metaplex,
   MetaplexFileContent,
@@ -9,6 +9,15 @@ import {
   WalletAdapter,
   walletAdapterIdentity,
   bundlrStorage,
+  DateTime,
+  CandyMachineV2EndSettings,
+  CandyMachineV2HiddenSettings,
+  CandyMachineV2WhitelistMintSettings,
+  CandyMachineV2Gatekeeper,
+  Creator,
+  CandyMachineV2Configs,
+  sol,
+  toBigNumber,
 } from "@metaplex-foundation/js";
 import { Cluster, Connection, Keypair, PublicKey } from "@solana/web3.js";
 import {
@@ -63,14 +72,29 @@ export default class CandyMachine {
    * @param files files to upload
    * @param metaData metadata to upload
    */
-  async createCandyMachine(
-    candyMachineConfig: CandyMachineV2Configs,
+  createCandyMachine = async (
+    candyMachineConfig: CandyMachineV2Config,
     files?: NftFile[],
     metaDatas?: NftMetaData[]
-  ) {
+  ) => {
+    const normalizedConfig: CandyMachineV2Configs = {
+      ...candyMachineConfig,
+      price: sol(candyMachineConfig.price),
+      itemsAvailable: toBigNumber(candyMachineConfig.itemsAvailable),
+      maxEditionSupply: toBigNumber(candyMachineConfig.maxEditionSupply),
+      goLiveDate: candyMachineConfig.goLiveDate || null,
+      endSettings: candyMachineConfig.endSettings || null,
+      hiddenSettings: candyMachineConfig.hiddenSettings || null,
+      whitelistMintSettings: candyMachineConfig.whitelistMintSettings || null,
+      gatekeeper: candyMachineConfig.gatekeeper || null,
+      creators: candyMachineConfig.creators || [],
+    };
+
+    console.log(this);
+
     const candyMachine = await this.metaplex
       .candyMachinesV2()
-      .create(candyMachineConfig)
+      .create(normalizedConfig)
       .then((candyMachine) => candyMachine.candyMachine)
       .catch(() => {});
 
@@ -111,7 +135,7 @@ export default class CandyMachine {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   /**
    * Add NFTs to Candy Machine
@@ -225,4 +249,22 @@ export interface MetaData {
   image: string;
   attributes: { trait_type: string; value: string }[];
   properties: { files: { uri: string; type: string }[] };
+}
+
+export interface CandyMachineV2Config {
+  wallet: PublicKey;
+  price: number;
+  itemsAvailable: number;
+  maxEditionSupply: number;
+  tokenMint: Option<PublicKey>;
+  sellerFeeBasisPoints: number;
+  symbol: string;
+  isMutable: boolean;
+  retainAuthority: boolean;
+  goLiveDate?: Option<DateTime>;
+  endSettings?: Option<CandyMachineV2EndSettings>;
+  hiddenSettings?: Option<CandyMachineV2HiddenSettings>;
+  whitelistMintSettings?: Option<CandyMachineV2WhitelistMintSettings>;
+  gatekeeper?: Option<CandyMachineV2Gatekeeper>;
+  creators?: Creator[];
 }

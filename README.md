@@ -17,6 +17,7 @@ $ npm install @slidelabs/solana-toolkit
 ## Usage
 
 #### Request SOL AirDrop
+
 ```typescript
 import { clusterApiUrl, Connection } from "@solana/web3.js";
 import { Transaction } from "@slidelabs/solana-toolkit";
@@ -30,6 +31,7 @@ transaction.solAirDrop(publicKey);
 ```
 
 #### Create a Candy Machine
+
 ```typescript
 import { clusterApiUrl, Connection } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";

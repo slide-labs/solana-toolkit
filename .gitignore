@@ -20,3 +20,5 @@ yarn-debug.log*
 yarn-error.log*
 
 modules.d.ts
+
+.vscode

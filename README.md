@@ -14,9 +14,7 @@ $ yarn add @slidelabs/solana-toolkit
 $ npm install @slidelabs/solana-toolkit
 ```
 
-## Usage
-
-#### Request SOL AirDrop
+### Request SOL AirDrop
 
 ```typescript
 import { clusterApiUrl, Connection } from "@solana/web3.js";
@@ -26,11 +24,11 @@ const connection = new Connection(clusterApiUrl("devnet"));
 const transaction = new Transaction(connection);
 
 const publicKey = new PublicKey("HjJQdfTHgC3EBX3471w4st8BXbBmtbaMyCAXNgcUb7dq");
- 
+
 transaction.solAirDrop(publicKey);
 ```
 
-#### Create a Candy Machine
+### Create a Candy Machine
 
 ```typescript
 import { clusterApiUrl, Connection } from "@solana/web3.js";
@@ -41,15 +39,13 @@ const connection = new Connection(clusterApiUrl("devnet"));
 const candyMachine = new CandyMachine(connection, { wallet }, "devnet");
 
 const JSON_METADATA = {
-  "name": "Glorious Arctic Halibut",
-  "symbol": "SR",
-  "description": "SR Desc",
-  "image": "0.png",
-  "attributes": [
-    { "trait_type": "Location", "value": "Strasbourg - France" },
-  ],
-  "properties": { "files": [{ "uri": "0.png", "type": "image/png" }] }
-}
+  name: "Glorious Arctic Halibut",
+  symbol: "SR",
+  description: "SR Desc",
+  image: "0.png",
+  attributes: [{ trait_type: "Location", value: "Strasbourg - France" }],
+  properties: { files: [{ uri: "0.png", type: "image/png" }] },
+};
 
 candyMachine.createCandyMachine(
   {
@@ -69,9 +65,7 @@ candyMachine.createCandyMachine(
     gatekeeper: null,
     creators: [
       {
-        address: new PublicKey(
-          "4x4UVonAFWUJ2MPNh8dVAPBBxkqxB82peiuD5rQQM1YV"
-        ),
+        address: new PublicKey("4x4UVonAFWUJ2MPNh8dVAPBBxkqxB82peiuD5rQQM1YV"),
         share: 100,
         verified: true,
       },

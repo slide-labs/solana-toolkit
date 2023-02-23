@@ -32,7 +32,7 @@ export default class SplToken {
 
   constructor(
     connection: Connection,
-    identity: {
+    identity?: {
       wallet?: WalletAdapter;
       keypair?: Keypair;
     }
@@ -40,11 +40,11 @@ export default class SplToken {
     this.connection = connection;
     this.metaplex = new Metaplex(connection);
 
-    if (identity.wallet) {
+    if (identity?.wallet) {
       this.wallet = identity.wallet;
     }
 
-    if (identity.keypair && !identity.wallet) {
+    if (identity?.keypair && !identity?.wallet) {
       this.keypair = identity.keypair;
     }
   }
@@ -96,6 +96,7 @@ export default class SplToken {
         address: string;
         symbol: string;
         image?: string | null;
+        uri?: string | null;
       }
     > = {};
 
@@ -119,6 +120,7 @@ export default class SplToken {
         address: tokenAccount.pubkey.toBase58(),
         symbol: tokenMetadata?.symbol || "Unknown",
         image: tokenMetadata?.json?.image || null,
+        uri: tokenMetadata?.uri || null,
       };
     }
 

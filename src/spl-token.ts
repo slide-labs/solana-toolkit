@@ -55,11 +55,11 @@ export default class SplToken {
    * @param mintAuthorityPublicKey mint authority public key
    * @param freezeAuthorityPublicKey freeze authority public key
    */
-  async createToken(
+  createToken = async (
     payer: Signer,
     mintAuthorityPublicKey: PublicKey,
     freezeAuthorityPublicKey: PublicKey
-  ) {
+  ) => {
     try {
       const mint = await createMint(
         this.connection,
@@ -72,13 +72,13 @@ export default class SplToken {
     } catch {
       throw CreateTokenError;
     }
-  }
+  };
 
   /**
    * Find all SPL tokens by owner
    * @param address owner wallet address
    */
-  async findAllSplTokens(address: string) {
+  findAllSplTokens = async (address: string) => {
     const account = new PublicKey(address);
 
     const tokenAccounts = await this.connection.getTokenAccountsByOwner(
@@ -125,9 +125,12 @@ export default class SplToken {
     }
 
     return accounts;
-  }
+  };
 
-  async getOrCreateSplTokenAccount(walletAddres: string, mintAddress: string) {
+  getOrCreateSplTokenAccount = async (
+    walletAddres: string,
+    mintAddress: string
+  ) => {
     const mintPublicKey = new PublicKey(mintAddress);
     const payerPublicKey = new PublicKey(walletAddres);
 
@@ -191,9 +194,9 @@ export default class SplToken {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
-  async getSplTokenAccount(walletAddres: string, mintAddress: string) {
+  getSplTokenAccount = async (walletAddres: string, mintAddress: string) => {
     const mintPublicKey = new PublicKey(mintAddress);
     const payerPublicKey = new PublicKey(walletAddres);
 
@@ -207,5 +210,5 @@ export default class SplToken {
     if (!account) return { account: null, associatedToken };
 
     return { account, associatedToken };
-  }
+  };
 }

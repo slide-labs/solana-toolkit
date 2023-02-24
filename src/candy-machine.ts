@@ -1,20 +1,11 @@
 import {
-  Option,
   keypairIdentity,
   Metaplex,
-  MetaplexFileContent,
-  MetaplexFileOptions,
   toMetaplexFile,
   toMetaplexFileFromJson,
   WalletAdapter,
   walletAdapterIdentity,
   bundlrStorage,
-  DateTime,
-  CandyMachineV2EndSettings,
-  CandyMachineV2HiddenSettings,
-  CandyMachineV2WhitelistMintSettings,
-  CandyMachineV2Gatekeeper,
-  Creator,
   CandyMachineV2Configs,
   sol,
   toBigNumber,
@@ -26,6 +17,11 @@ import {
   CreateCandyMachineError,
   UploadFilesError,
 } from "./errors";
+import {
+  CandyMachineV2Config,
+  NftFile,
+  NftMetaData,
+} from "./types/candy-machine";
 
 export default class CandyMachine {
   connection: Connection;
@@ -90,8 +86,6 @@ export default class CandyMachine {
       creators: candyMachineConfig.creators || [],
     };
 
-    console.log(this);
-
     const candyMachine = await this.metaplex
       .candyMachinesV2()
       .create(normalizedConfig)
@@ -144,11 +138,11 @@ export default class CandyMachine {
    * @param files files to upload
    * @param metaData metadata to upload
    */
-  async addItemsToCandyMachine(
+  addItemsToCandyMachine = async (
     candyMachineAddress: string,
     files: NftFile[],
     metaDatas: NftMetaData[]
-  ) {
+  ) => {
     try {
       const candyMachine = await this.metaplex
         .candyMachinesV2()
@@ -206,13 +200,13 @@ export default class CandyMachine {
     } catch (e) {
       throw e;
     }
-  }
+  };
 
   /**
    * Get all candy machine
    * @param ownerWalletAddress wallet addres
    */
-  async getAllCandyMachine(ownerWalletAddress: string) {
+  getAllCandyMachine = async (ownerWalletAddress: string) => {
     try {
       const candyMachines = await this.metaplex.candyMachinesV2().findAllBy({
         publicKey: new PublicKey(ownerWalletAddress),
@@ -223,48 +217,5 @@ export default class CandyMachine {
     } catch (e) {
       throw e;
     }
-  }
-}
-
-//
-// Utils
-//
-
-export interface NftFile {
-  image: MetaplexFileContent;
-  fileName: string;
-  nftName: string;
-  options: MetaplexFileOptions;
-}
-
-export interface NftMetaData {
-  json: MetaData;
-  fileName: string;
-}
-
-export interface MetaData {
-  name: string;
-  symbol: string;
-  description: string;
-  image: string;
-  attributes: { trait_type: string; value: string }[];
-  properties: { files: { uri: string; type: string }[] };
-}
-
-export interface CandyMachineV2Config {
-  wallet: PublicKey;
-  price: number;
-  itemsAvailable: number;
-  maxEditionSupply: number;
-  tokenMint: Option<PublicKey>;
-  sellerFeeBasisPoints: number;
-  symbol: string;
-  isMutable: boolean;
-  retainAuthority: boolean;
-  goLiveDate?: Option<DateTime>;
-  endSettings?: Option<CandyMachineV2EndSettings>;
-  hiddenSettings?: Option<CandyMachineV2HiddenSettings>;
-  whitelistMintSettings?: Option<CandyMachineV2WhitelistMintSettings>;
-  gatekeeper?: Option<CandyMachineV2Gatekeeper>;
-  creators?: Creator[];
+  };
 }

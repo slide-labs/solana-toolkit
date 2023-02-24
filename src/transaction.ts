@@ -42,7 +42,7 @@ export default class Transaction {
    *  @param walletAddressPublicKey receive airdrop
    * `it's run only on devnet or testnet!`
    */
-  async solAirDrop(walletAddressPublicKey: PublicKey) {
+  solAirDrop = async (walletAddressPublicKey: PublicKey) => {
     try {
       const response = await this.connection.requestAirdrop(
         walletAddressPublicKey,
@@ -52,24 +52,24 @@ export default class Transaction {
     } catch {
       throw DefaultError;
     }
-  }
+  };
 
-  async asyncconfirmTransaction(
+  asyncconfirmTransaction = async (
     signature: string,
     blockhash: string,
     lastValidBlockHeight: number
-  ) {
+  ) => {
     const confirmation = await this.connection.confirmTransaction(
       { signature, blockhash, lastValidBlockHeight },
       "finalized"
     );
     return confirmation.value;
-  }
+  };
 
-  async getTxn(
+  getTxn = async (
     signature: string,
     config?: { maxTries?: number; waitMS?: number }
-  ): Promise<VersionedTransactionResponse | null> {
+  ): Promise<VersionedTransactionResponse | null> => {
     const maxTries = config?.maxTries || 1;
     const waitMS = config?.waitMS || 500;
 
@@ -83,7 +83,7 @@ export default class Transaction {
     await sleep(waitMS);
 
     return this.getTxn(signature, { maxTries: remainingTries, waitMS });
-  }
+  };
 
   transferToken = async (
     payerWalletAddress: string,

@@ -128,7 +128,7 @@ export default class SplToken {
         symbol: tokenMetadata?.symbol || "Unknown",
         image: tokenMetadata?.json?.image || null,
         uri: tokenMetadata?.uri || null,
-        downloadMetadata,
+        downloadMetadata: downloadMetadata?.data || null,
       };
     }
 

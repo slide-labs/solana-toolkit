@@ -64,7 +64,7 @@ export default class NFT {
 
       nfts[accountData.mint.toBase58()] = {
         ...tokenMetadata,
-        metadata: downloadMetadata ? { ...downloadMetadata } : null,
+        metadata: downloadMetadata ? { ...downloadMetadata.data } : null,
       };
     }
 

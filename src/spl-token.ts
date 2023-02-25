@@ -23,6 +23,7 @@ import {
 } from "@solana/web3.js";
 import Transaction from "./transaction";
 import { CreateTokenError } from "./errors";
+import axios from "axios";
 
 export default class SplToken {
   connection: Connection;
@@ -117,9 +118,7 @@ export default class SplToken {
 
       let downloadMetadata;
       if (tokenMetadata && tokenMetadata.uri) {
-        downloadMetadata = await fetch(tokenMetadata.uri)
-          .then((res) => res.json())
-          .then((data) => data);
+        downloadMetadata = await axios(tokenMetadata.uri).then((res) => res);
       }
 
       accounts[accountData.mint.toBase58()] = {

@@ -1,6 +1,7 @@
 import { Metaplex, Nft, Sft, WalletAdapter } from "@metaplex-foundation/js";
 import { AccountLayout, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
+import axios from "axios";
 
 export default class NFT {
   connection: Connection;
@@ -57,13 +58,13 @@ export default class NFT {
 
       if (tokenMetadata?.model === "sft" || !tokenMetadata) continue;
 
-      const downloadMetadata = await fetch(tokenMetadata.uri)
-        .then((res) => res.json())
-        .then((data) => data);
+      const downloadMetadata = await axios(tokenMetadata.uri).then(
+        (res) => res
+      );
 
       nfts[accountData.mint.toBase58()] = {
         ...tokenMetadata,
-        metadata: { ...downloadMetadata },
+        metadata: downloadMetadata ? { ...downloadMetadata } : null,
       };
     }
 
@@ -76,5 +77,5 @@ export default class NFT {
 //
 
 interface NftToken extends Nft {
-  metadata: object;
+  metadata: object | null;
 }

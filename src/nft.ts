@@ -1,10 +1,4 @@
-import {
-  Metaplex,
-  Nft,
-  NftWithToken,
-  Sft,
-  WalletAdapter,
-} from "@metaplex-foundation/js";
+import { Metaplex, Nft, Sft, WalletAdapter } from "@metaplex-foundation/js";
 import { AccountLayout, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 
@@ -47,7 +41,7 @@ export default class NFT {
       }
     );
 
-    const nfts: Record<string, Nft | NftWithToken> = {};
+    const nfts: Record<string, NftToken> = {};
 
     for (let i = 0; i < tokenAccounts.value.length; i++) {
       const tokenAccount = tokenAccounts.value[i];
@@ -63,9 +57,24 @@ export default class NFT {
 
       if (tokenMetadata?.model === "sft" || !tokenMetadata) continue;
 
-      nfts[accountData.mint.toBase58()] = tokenMetadata;
+      const downloadMetadata = await fetch(tokenMetadata.uri)
+        .then((res) => res.json())
+        .then((data) => data);
+
+      nfts[accountData.mint.toBase58()] = {
+        ...tokenMetadata,
+        metadata: { ...downloadMetadata },
+      };
     }
 
     return nfts;
   };
+}
+
+//
+// Utils
+//
+
+interface NftToken extends Nft {
+  metadata: object;
 }

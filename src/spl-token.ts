@@ -97,6 +97,7 @@ export default class SplToken {
         symbol: string;
         image?: string | null;
         uri?: string | null;
+        downloadMetadata?: object;
       }
     > = {};
 
@@ -114,6 +115,13 @@ export default class SplToken {
 
       if (tokenMetadata?.model === "nft") continue;
 
+      let downloadMetadata;
+      if (tokenMetadata && tokenMetadata.uri) {
+        downloadMetadata = await fetch(tokenMetadata.uri)
+          .then((res) => res.json())
+          .then((data) => data);
+      }
+
       accounts[accountData.mint.toBase58()] = {
         amount: accountData.amount,
         name: tokenMetadata?.name || "Unknown",
@@ -121,6 +129,7 @@ export default class SplToken {
         symbol: tokenMetadata?.symbol || "Unknown",
         image: tokenMetadata?.json?.image || null,
         uri: tokenMetadata?.uri || null,
+        downloadMetadata,
       };
     }
 

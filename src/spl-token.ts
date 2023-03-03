@@ -8,20 +8,11 @@ import {
 } from "@metaplex-foundation/js";
 import {
   AccountLayout,
-  createAssociatedTokenAccountInstruction,
   createMint,
-  getAccount,
-  getAssociatedTokenAddressSync,
+  getOrCreateAssociatedTokenAccount,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-import {
-  Connection,
-  Keypair,
-  PublicKey,
-  Signer,
-  Transaction as SolanaTransaction,
-} from "@solana/web3.js";
-import Transaction from "./transaction";
+import { Connection, Keypair, PublicKey, Signer } from "@solana/web3.js";
 import { CreateTokenError } from "./errors";
 import axios from "axios";
 
@@ -142,81 +133,15 @@ export default class SplToken {
     const mintPublicKey = new PublicKey(mintAddress);
     const payerPublicKey = new PublicKey(walletAddres);
 
-    try {
-      const { account, associatedToken } = await this.getSplTokenAccount(
-        mintAddress,
-        mintAddress
-      );
+    if (!this.keypair) throw new Error("Keypair is not defined");
 
-      if (account) {
-        return { account };
-      }
-
-      const transaction = new SolanaTransaction().add(
-        createAssociatedTokenAccountInstruction(
-          payerPublicKey,
-          associatedToken,
-          payerPublicKey,
-          mintPublicKey
-        )
-      );
-
-      const { blockhash } = await this.connection.getLatestBlockhash();
-
-      transaction.recentBlockhash = blockhash;
-      transaction.feePayer = payerPublicKey;
-
-      if (this.wallet?.signTransaction) {
-        await this.wallet.signTransaction(transaction);
-      }
-
-      if (this.keypair) {
-        transaction.sign(this.keypair);
-      }
-
-      const signature = await this.connection.sendRawTransaction(
-        transaction.serialize(),
-        {
-          skipPreflight: true,
-          maxRetries: 5,
-        }
-      );
-
-      const { getTxn } = new Transaction(this.connection, {
-        wallet: this.wallet,
-        keypair: this.keypair,
-      });
-
-      const txn = await getTxn(signature);
-
-      if (txn?.meta?.err) {
-        throw new Error(txn.meta.err.toString());
-      }
-
-      const { account: acc } = await this.getSplTokenAccount(
-        mintAddress,
-        mintAddress
-      );
-
-      return { signature, txn, account: acc };
-    } catch (e) {
-      throw e;
-    }
-  };
-
-  getSplTokenAccount = async (walletAddres: string, mintAddress: string) => {
-    const mintPublicKey = new PublicKey(mintAddress);
-    const payerPublicKey = new PublicKey(walletAddres);
-
-    const associatedToken = getAssociatedTokenAddressSync(
+    const response = getOrCreateAssociatedTokenAccount(
+      this.connection,
+      this.keypair,
       mintPublicKey,
       payerPublicKey
     );
 
-    const account = await getAccount(this.connection, associatedToken);
-
-    if (!account) return { account: null, associatedToken };
-
-    return { account, associatedToken };
+    return response;
   };
 }

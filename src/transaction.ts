@@ -4,10 +4,13 @@ import {
   Keypair,
   LAMPORTS_PER_SOL,
   PublicKey,
+  SystemProgram,
   TransactionInstruction,
   TransactionMessage,
   VersionedTransaction,
   VersionedTransactionResponse,
+  Transaction as SolanaTransaction,
+  sendAndConfirmTransaction,
 } from "@solana/web3.js";
 import sleep from "./utils/sleep";
 import SplToken from "./spl-token";
@@ -21,18 +24,18 @@ export default class Transaction {
 
   constructor(
     connection: Connection,
-    identity: {
+    identity?: {
       wallet?: WalletAdapter;
       keypair?: Keypair;
     }
   ) {
     this.connection = connection;
 
-    if (identity.wallet) {
+    if (identity?.wallet) {
       this.wallet = identity.wallet;
     }
 
-    if (identity.keypair && !identity.wallet) {
+    if (identity?.keypair && !identity.wallet) {
       this.keypair = identity.keypair;
     }
   }
@@ -54,7 +57,7 @@ export default class Transaction {
     }
   };
 
-  asyncconfirmTransaction = async (
+  asyncConfirmTransaction = async (
     signature: string,
     blockhash: string,
     lastValidBlockHeight: number
@@ -102,7 +105,7 @@ export default class Transaction {
       keypair: this.keypair,
     });
 
-    const { account } = await getOrCreateSplTokenAccount(
+    const account = await getOrCreateSplTokenAccount(
       payment.payee,
       mintAddress
     );
@@ -147,5 +150,44 @@ export default class Transaction {
     }
 
     return { signature, txn };
+  };
+
+  createAccount = async () => {
+    if (!this.keypair && !this.wallet) {
+      throw new Error("Wallet is not connected, please provide a keypair");
+    }
+
+    const space = 0;
+
+    const rentExemptionAmount =
+      await this.connection.getMinimumBalanceForRentExemption(space);
+
+    const newAccountPubkey = Keypair.generate();
+    const createAccountParams = {
+      fromPubkey: (this.wallet?.publicKey ||
+        this.keypair?.publicKey) as PublicKey,
+      newAccountPubkey: newAccountPubkey.publicKey,
+      lamports: rentExemptionAmount,
+      space,
+      programId: SystemProgram.programId,
+    };
+
+    const createAccountTransaction = new SolanaTransaction().add(
+      SystemProgram.createAccount(createAccountParams)
+    );
+
+    if (this.wallet && this.wallet?.signTransaction) {
+      await this.wallet.signTransaction(createAccountTransaction);
+    }
+
+    if (this.keypair) {
+      await sendAndConfirmTransaction(
+        this.connection,
+        createAccountTransaction,
+        [this.keypair, newAccountPubkey]
+      );
+    }
+
+    return newAccountPubkey;
   };
 }

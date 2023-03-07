@@ -126,7 +126,8 @@ export default class Transaction {
       )
     );
 
-    const { blockhash } = await this.connection.getLatestBlockhash();
+    const { blockhash, lastValidBlockHeight } =
+      await this.connection.getLatestBlockhash();
 
     const messageV0 = new TransactionMessage({
       payerKey: payerPublicKey,
@@ -135,6 +136,14 @@ export default class Transaction {
     }).compileToV0Message();
 
     const transaction = new VersionedTransaction(messageV0);
+
+    if (this.keypair) {
+      transaction.sign([this.keypair]);
+    }
+
+    if (this.wallet && this.wallet?.signTransaction) {
+      await this.wallet.signTransaction(transaction as any);
+    }
 
     const signature = await this.connection.sendTransaction(transaction, {
       maxRetries: 5,
@@ -148,6 +157,12 @@ export default class Transaction {
     if (txn?.meta?.err) {
       throw new Error(txn.meta.err.toString());
     }
+
+    await this.asyncConfirmTransaction(
+      signature,
+      blockhash,
+      lastValidBlockHeight
+    );
 
     return { signature, txn };
   };

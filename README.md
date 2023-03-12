@@ -1,5 +1,7 @@
 # `@slidelabs/solana-toolkit`
 
+
+<a href="https://docs.slidelabs.xyz/"><img alt="Docs" src="https://img.shields.io/badge/docs-typedoc-blueviolet" /></a>
 ![npm](https://img.shields.io/npm/v/@slidelabs/solana-toolkit)
 ![npm](https://img.shields.io/npm/dm/@slidelabs/solana-toolkit)
 ![npm](https://img.shields.io/npm/l/@slidelabs/solana-toolkit)

@@ -10,10 +10,10 @@
     "docs": "typedoc --skipErrorChecking --excludePrivate --includeVersion --out ./docs src"
   },
   "dependencies": {
-    "@metaplex-foundation/js": "0.18.1",
+    "@metaplex-foundation/js": "0.19.3",
     "@solana/spl-token": "^0.3.7",
-    "@solana/web3.js": "^1.73.2",
-    "axios": "^1.3.4",
+    "@solana/web3.js": "^1.76.0",
+    "axios": "^1.4.0",
     "bs58": "^5.0.0"
   },
   "devDependencies": {

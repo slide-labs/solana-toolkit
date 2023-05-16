@@ -1,18 +1,19 @@
 # `@slidelabs/solana-toolkit`
 
-
 <a href="https://docs.slidelabs.xyz/"><img alt="Docs" src="https://img.shields.io/badge/docs-typedoc-blueviolet" /></a>
 ![npm](https://img.shields.io/npm/v/@slidelabs/solana-toolkit)
 ![npm](https://img.shields.io/npm/dm/@slidelabs/solana-toolkit)
 ![npm](https://img.shields.io/npm/l/@slidelabs/solana-toolkit)
 
-Quickly use the main methods present in Solana, all in one toolkit. SPL tokens, transactions, mints.
+Quickly use the main methods present in Solana, all in one toolkit. SPL tokens, transactions, mints, candy machines.
 
 ## Installation
 
 ```shell
 $ yarn add @slidelabs/solana-toolkit
+
 # or
+
 $ npm install @slidelabs/solana-toolkit
 ```
 

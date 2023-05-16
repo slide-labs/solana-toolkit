@@ -23,7 +23,7 @@ export default class NFT {
       this.wallet = identity.wallet;
     }
 
-    if (identity?.keypair && !identity?.wallet) {
+    if (identity?.keypair) {
       this.keypair = identity.keypair;
     }
   }

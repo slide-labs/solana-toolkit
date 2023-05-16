@@ -43,8 +43,8 @@ export default class CandyMachine {
     if (cluster === "devnet") {
       this.metaplex.use(
         bundlrStorage({
-          address: "https://devnet.bundlr.network",
-          providerUrl: "https://api.devnet.solana.com",
+          address: DEVNET_STORAGE,
+          providerUrl: DEVNET_PROVIDER_URL,
           timeout: 60000,
         })
       );
@@ -54,7 +54,7 @@ export default class CandyMachine {
       this.metaplex.use(walletAdapterIdentity(identity.wallet));
     }
 
-    if (identity.keypair && !identity.wallet) {
+    if (identity.keypair) {
       this.metaplex.use(keypairIdentity(identity.keypair));
     }
   }
@@ -219,3 +219,10 @@ export default class CandyMachine {
     }
   };
 }
+
+//
+// Utils
+//
+
+const DEVNET_STORAGE = "https://devnet.bundlr.networ"
+const DEVNET_PROVIDER_URL = "https://api.devnet.solana.com"

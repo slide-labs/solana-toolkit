@@ -84,3 +84,4 @@ candyMachine.createCandyMachine(
   [{ json: JSON_METADATA, fileName: "0.json" }]
 );
 ```
+Latest update: May 16th, 2023

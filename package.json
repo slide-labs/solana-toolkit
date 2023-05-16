@@ -39,7 +39,12 @@
     "candy machine"
   ],
   "contributors": [
-    "dannpl"
+    "dannpl",
+    "DaviNSK",
+    "heluansantos",
+    "DevJelle",
+    "NetoMonte",
+    "victorfulia"
   ],
   "main": "build/index.js",
   "module": "build/index.js",
